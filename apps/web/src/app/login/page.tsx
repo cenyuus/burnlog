@@ -2,16 +2,23 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { createBrowserClient } from "@supabase/ssr";
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGitHubLogin = async () => {
     setIsLoading(true);
-    // For now, redirect to Supabase GitHub OAuth
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const redirectTo = `${window.location.origin}/auth/callback`;
-    window.location.href = `${supabaseUrl}/auth/v1/authorize?provider=github&redirect_to=${encodeURIComponent(redirectTo)}`;
+    const supabase = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+    await supabase.auth.signInWithOAuth({
+      provider: "github",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
   };
 
   return (
