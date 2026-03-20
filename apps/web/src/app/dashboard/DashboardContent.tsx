@@ -234,24 +234,26 @@ export default function DashboardContent() {
       <Header />
       <main className="flex-1 px-6 py-8">
         <div className="mx-auto w-full max-w-[1200px]">
-          {/* Debug state toggle (remove in production) */}
-          <div className="mb-4 flex gap-2">
-            {(["data", "loading", "empty", "error"] as ViewState[]).map(
-              (state) => (
-                <button
-                  key={state}
-                  onClick={() => setViewState(state)}
-                  className={`rounded-[50px] px-3 py-1 text-[11px] font-[600] capitalize transition-colors ${
-                    viewState === state
-                      ? "bg-brand text-white"
-                      : "bg-border/50 text-text-secondary hover:bg-border"
-                  }`}
-                >
-                  {state}
-                </button>
-              )
-            )}
-          </div>
+          {/* Debug state toggle — only visible in development */}
+          {process.env.NODE_ENV === "development" && (
+            <div className="mb-4 flex gap-2">
+              {(["data", "loading", "empty", "error"] as ViewState[]).map(
+                (state) => (
+                  <button
+                    key={state}
+                    onClick={() => setViewState(state)}
+                    className={`rounded-[50px] px-3 py-1 text-[11px] font-[600] capitalize transition-colors ${
+                      viewState === state
+                        ? "bg-brand text-white"
+                        : "bg-border/50 text-text-secondary hover:bg-border"
+                    }`}
+                  >
+                    {state}
+                  </button>
+                )
+              )}
+            </div>
+          )}
 
           {/* Loading state */}
           {viewState === "loading" && <SkeletonLoader />}
