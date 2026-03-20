@@ -1,10 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { createBrowserClient } from "@supabase/ssr";
+import type { User } from "@supabase/supabase-js";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const supabase = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user);
+    });
+  }, []);
+
+  const username = user?.user_metadata?.preferred_username || user?.user_metadata?.user_name || "me";
+  const avatarUrl = user?.user_metadata?.avatar_url;
 
   return (
     <header className="frosted-glass sticky top-0 z-100">
@@ -30,24 +46,46 @@ export default function Header() {
           >
             Dashboard
           </Link>
-          <Link
-            href="/u/williamchan"
-            className="text-[15px] font-[500] text-text-secondary transition-colors duration-200 hover:text-text"
-          >
-            Profile
-          </Link>
+          {user && (
+            <Link
+              href={`/u/${username}`}
+              className="text-[15px] font-[500] text-text-secondary transition-colors duration-200 hover:text-text"
+            >
+              Profile
+            </Link>
+          )}
           <Link
             href="/settings"
             className="text-[15px] font-[500] text-text-secondary transition-colors duration-200 hover:text-text"
           >
             Settings
           </Link>
-          <Link
-            href="/login"
-            className="inline-flex h-[44px] items-center rounded-[50px] bg-brand px-6 text-[15px] font-[600] text-white transition-all duration-200 hover:bg-brand-hover hover:-translate-y-[2px]"
-          >
-            Log in
-          </Link>
+          {user ? (
+            <Link
+              href={`/u/${username}`}
+              className="flex h-[44px] items-center gap-2 rounded-[50px] border border-border bg-white px-4 transition-all duration-200 hover:bg-bg"
+            >
+              {avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt=""
+                  className="h-7 w-7 rounded-full"
+                />
+              ) : (
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-brand text-[12px] font-[700] text-white">
+                  {username[0].toUpperCase()}
+                </div>
+              )}
+              <span className="text-[14px] font-[600] text-text">{username}</span>
+            </Link>
+          ) : (
+            <Link
+              href="/login"
+              className="inline-flex h-[44px] items-center rounded-[50px] bg-brand px-6 text-[15px] font-[600] text-white transition-all duration-200 hover:bg-brand-hover hover:-translate-y-[2px]"
+            >
+              Log in
+            </Link>
+          )}
         </div>
 
         {/* Mobile hamburger */}
@@ -96,13 +134,15 @@ export default function Header() {
             >
               Dashboard
             </Link>
-            <Link
-              href="/u/williamchan"
-              className="rounded-[12px] px-4 py-3 text-[15px] font-[500] text-text-secondary transition-colors duration-200 hover:bg-blue-50 hover:text-text"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Profile
-            </Link>
+            {user && (
+              <Link
+                href={`/u/${username}`}
+                className="rounded-[12px] px-4 py-3 text-[15px] font-[500] text-text-secondary transition-colors duration-200 hover:bg-blue-50 hover:text-text"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Profile
+              </Link>
+            )}
             <Link
               href="/settings"
               className="rounded-[12px] px-4 py-3 text-[15px] font-[500] text-text-secondary transition-colors duration-200 hover:bg-blue-50 hover:text-text"
@@ -110,13 +150,26 @@ export default function Header() {
             >
               Settings
             </Link>
-            <Link
-              href="/login"
-              className="mt-2 inline-flex h-[44px] items-center justify-center rounded-[50px] bg-brand px-6 text-[15px] font-[600] text-white transition-all duration-200 hover:bg-brand-hover"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Log in
-            </Link>
+            {user ? (
+              <div className="mt-2 flex items-center gap-3 px-4">
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt="" className="h-8 w-8 rounded-full" />
+                ) : (
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-[13px] font-[700] text-white">
+                    {username[0].toUpperCase()}
+                  </div>
+                )}
+                <span className="text-[15px] font-[600] text-text">{username}</span>
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                className="mt-2 inline-flex h-[44px] items-center justify-center rounded-[50px] bg-brand px-6 text-[15px] font-[600] text-white transition-all duration-200 hover:bg-brand-hover"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Log in
+              </Link>
+            )}
           </div>
         </div>
       )}
