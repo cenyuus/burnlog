@@ -376,9 +376,12 @@ export default function DashboardContent() {
                     <p className="mb-4 text-[15px] text-text-on-dark">
                       Generate a card and show off your AI usage.
                     </p>
-                    <button className="inline-flex h-[44px] w-full items-center justify-center rounded-[50px] bg-brand text-[15px] font-[600] text-white transition-all duration-200 hover:bg-brand-hover hover:-translate-y-[2px]">
+                    <a
+                      href="/card/williamchan-roi_beast-month"
+                      className="inline-flex h-[44px] w-full items-center justify-center rounded-[50px] bg-brand text-[15px] font-[600] text-white transition-all duration-200 hover:bg-brand-hover hover:-translate-y-[2px]"
+                    >
                       Create Share Card
-                    </button>
+                    </a>
                   </article>
                 </div>
               </div>
