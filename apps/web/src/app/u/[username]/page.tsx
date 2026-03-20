@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import { createServiceClient } from "@/lib/supabase/server";
+import { calculateBadges } from "@/lib/badges";
 import Header from "@/components/Header";
 import Heatmap from "@/components/Heatmap";
 import BadgeDisplay from "@/components/BadgeDisplay";
 import ShareCardPreview from "@/components/ShareCardPreview";
-import type { PublicProfileData } from "@/lib/supabase/types";
+import type { PublicProfileData, DailyUsage } from "@/lib/supabase/types";
 
 function formatTokens(n: number): string {
   if (n >= 1_000_000_000) return `${(n / 1_000_000_000).toFixed(1)}B`;
@@ -18,14 +20,57 @@ function formatCost(n: number): string {
 }
 
 async function getProfileData(username: string): Promise<PublicProfileData | null> {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://web-one-lac-12.vercel.app";
   try {
-    const res = await fetch(`${appUrl}/api/profile/${username}`, {
-      cache: "no-store",
+    const supabase = createServiceClient();
+
+    const { data: stats } = await supabase.rpc("get_public_profile_stats", {
+      target_username: username,
     });
-    if (!res.ok) return null;
-    return res.json();
-  } catch {
+
+    if (!stats || !stats.username) return null;
+
+    const { data: heatmapRaw } = await supabase.rpc("get_public_heatmap", {
+      target_username: username,
+      days_back: 365,
+    });
+
+    const heatmap = (heatmapRaw || []) as { date: string; tokens: number }[];
+
+    // Build pseudo DailyUsage for badge calculation
+    const pseudoUsage: DailyUsage[] = heatmap.map((h) => ({
+      id: "",
+      user_id: "",
+      date: h.date,
+      platform: "claude" as const,
+      model: "unknown",
+      input_tokens: 0,
+      output_tokens: 0,
+      cache_creation_tokens: 0,
+      cache_read_tokens: 0,
+      total_tokens: h.tokens,
+      total_cost: 0,
+      active_hours: {},
+      uploaded_at: "",
+    }));
+
+    const badges = calculateBadges(pseudoUsage);
+
+    return {
+      username: stats.username,
+      display_name: stats.display_name,
+      avatar_url: stats.avatar_url,
+      total_tokens: Number(stats.total_tokens) || 0,
+      total_cost: Number(stats.total_cost) || 0,
+      days_active: Number(stats.days_active) || 0,
+      platforms_used: stats.platforms_used || [],
+      models_used: stats.models_used || [],
+      first_date: stats.first_date,
+      last_date: stats.last_date,
+      heatmap,
+      badges,
+    };
+  } catch (error) {
+    console.error("Profile fetch error:", error);
     return null;
   }
 }
