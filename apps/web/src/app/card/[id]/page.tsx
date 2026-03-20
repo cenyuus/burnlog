@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Header from "@/components/Header";
 import ShareCardPreview from "@/components/ShareCardPreview";
+import CardActions from "../CardActions";
 import { MOCK_SHARE_CARD } from "@/lib/mock-data";
 
 export async function generateMetadata(
@@ -70,39 +71,7 @@ export default async function ShareCardPage(
           </section>
 
           {/* Actions */}
-          <section className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            <button
-              className="inline-flex h-[44px] items-center gap-2 rounded-[50px] border border-border bg-white px-6 text-[15px] font-[600] text-text transition-all duration-200 hover:bg-bg"
-            >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
-                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
-              </svg>
-              Copy Link
-            </button>
-            <button
-              className="inline-flex h-[44px] items-center gap-2 rounded-[50px] bg-[#1DA1F2] px-6 text-[15px] font-[600] text-white transition-all duration-200 hover:bg-[#1a8cd8] hover:-translate-y-[2px]"
-            >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-              </svg>
-              Share on X
-            </button>
-          </section>
+          <CardActions shareUrl={`https://burnlog.dev/card/${id}`} />
 
           {/* CTA */}
           <section className="mt-16 rounded-[20px] bg-card-dark p-8 text-center">
