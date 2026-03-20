@@ -1,0 +1,137 @@
+@import "tailwindcss";
+
+/* Geist Mono from CDN */
+@font-face {
+  font-family: "Geist Mono";
+  src: url("https://cdn.jsdelivr.net/npm/geist@1.3.1/dist/fonts/geist-mono/GeistMono-Regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geist Mono";
+  src: url("https://cdn.jsdelivr.net/npm/geist@1.3.1/dist/fonts/geist-mono/GeistMono-SemiBold.woff2")
+    format("woff2");
+  font-weight: 600;
+  font-display: swap;
+}
+
+@theme inline {
+  /* Fonts */
+  --font-sora: var(--font-sora-var), "Sora", sans-serif;
+  --font-geist-mono: "Geist Mono", monospace;
+  --font-jetbrains: var(--font-jetbrains-var), "JetBrains Mono", monospace;
+
+  /* Brand */
+  --color-brand: #2563eb;
+  --color-brand-hover: #1d4ed8;
+  --color-brand-light: #3b82f6;
+
+  /* Blue scale */
+  --color-blue-50: #eff6ff;
+  --color-blue-100: #dbeafe;
+  --color-blue-200: #bfdbfe;
+  --color-blue-300: #93c5fd;
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #2563eb;
+  --color-blue-700: #1d4ed8;
+
+  /* Neutrals (warm gray) */
+  --color-bg: #fafafa;
+  --color-card: #ffffff;
+  --color-card-dark: #1a1a1a;
+  --color-border: #e5e7eb;
+  --color-text: #111827;
+  --color-text-secondary: #6b7280;
+  --color-text-muted: #9ca3af;
+  --color-text-on-dark: #f9fafb;
+
+  /* Semantic */
+  --color-success: #059669;
+  --color-success-bg: #d1fae5;
+  --color-warning: #d97706;
+  --color-warning-bg: #fef3c7;
+  --color-error: #dc2626;
+  --color-error-bg: #fee2e2;
+  --color-info: #2563eb;
+  --color-info-bg: #dbeafe;
+
+  /* Pastel accents */
+  --color-pastel-blue: #dbeafe;
+  --color-pastel-green: #d1fae5;
+  --color-pastel-purple: #ede9fe;
+  --color-pastel-orange: #fef3c7;
+  --color-pastel-pink: #fce7f3;
+
+  /* Heatmap levels */
+  --color-heatmap-0: #f3f4f6;
+  --color-heatmap-1: #dbeafe;
+  --color-heatmap-2: #93c5fd;
+  --color-heatmap-3: #3b82f6;
+  --color-heatmap-4: #2563eb;
+
+  /* Spacing */
+  --spacing-2xs: 2px;
+  --spacing-xs: 4px;
+
+  /* Radii */
+  --radius-card: 20px;
+  --radius-button: 50px;
+  --radius-input: 12px;
+  --radius-alert: 14px;
+}
+
+/* Base styles */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sora);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Card shadows */
+.card-shadow {
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.06),
+    0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* Hatched pattern for chart bars */
+.hatched {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 3px,
+    rgba(0, 0, 0, 0.07) 3px,
+    rgba(0, 0, 0, 0.07) 4px
+  );
+}
+
+/* Frosted glass */
+.frosted-glass {
+  background: rgba(250, 250, 250, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+}
+
+/* Focus ring for accessibility */
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Hide scrollbar for heatmap horizontal scroll on mobile */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
